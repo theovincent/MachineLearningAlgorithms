@@ -19,7 +19,7 @@ def read_txt(name_path):
 
 
 if __name__ == "__main__":
-    DATA_PATH = Path("../../data/small_data.txt")
+    DATA_PATH = Path("../../../data/small_data.txt")
     (DATA, LABEL) = read_txt(DATA_PATH)
     print("Data \n", DATA)
     print("Label \n", LABEL)

@@ -24,7 +24,7 @@ def read_csv(path_csv):
 
 
 if __name__ == "__main__":
-    DATA_CSV = Path("../../data/data.csv")
+    DATA_CSV = Path("../../../data/data.csv")
     (HOUSES, PRICES) = read_csv(DATA_CSV)
     print("Houses \n", HOUSES)
     print("Prices \n", PRICES)

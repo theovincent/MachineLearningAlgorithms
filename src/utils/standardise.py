@@ -1,6 +1,6 @@
 from pathlib import Path
 import numpy as np
-from src.utils.read_txt import read_txt
+from src.utils.read_file.read_txt import read_txt
 
 
 def standardize_data(data):
