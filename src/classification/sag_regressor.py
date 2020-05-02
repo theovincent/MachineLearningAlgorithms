@@ -2,8 +2,8 @@ import numpy as np
 import random as rd
 
 
-class SAGClassifier:
-    def __init__(self, loss, loss_derivation, add_bias, lambada=0.001, eta=0.01):
+class SAGRegressor:
+    def __init__(self, loss, loss_derivation, loss_derivation_bias, add_bias, lambada=0.001, eta=0.01):
         # Trade off
         self.lambada = lambada
         # Optimisation step
@@ -12,6 +12,8 @@ class SAGClassifier:
         self.loss = loss
         # Loss derivative function
         self.loss_derivation = loss_derivation
+        # Loss derivative function bias
+        self.loss_derivation_bias = loss_derivation_bias
 
         # Empirical risk
         self.start_train = False
@@ -70,8 +72,8 @@ class SAGClassifier:
 
                 # Update loss derivatives
                 if self.loss(samples[idx, :], labels[idx], self.ortho_vect, self.bias) > 0:
-                    loss_derivative_ortho = self.loss_derivation(samples[idx, :], labels[idx])
-                    loss_derivative_bias = - labels[idx]
+                    loss_derivative_ortho = self.loss_derivation(samples[idx, :], labels[idx], self.ortho_vect, self.bias)
+                    loss_derivative_bias = self.loss_derivation_bias(samples[idx, :], labels[idx], self.ortho_vect, self.bias)
                 else:
                     loss_derivative_ortho = 0
                     loss_derivative_bias = 0
