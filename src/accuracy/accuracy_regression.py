@@ -3,7 +3,7 @@ import numpy as np
 
 def get_accuracy(sag_model, samples, labels):
     # Get the accuracy for each sample
-    accuracies = (labels - sag_model.predict(samples)) / (labels + 10 ** -16)
+    accuracies = np.abs(labels - sag_model.predict(samples)) / (labels + 10 ** -16)
 
     # Withdraw the sample with a 0 label
     nb_samples = len(samples)
@@ -12,4 +12,4 @@ def get_accuracy(sag_model, samples, labels):
             accuracies[idx_sample] = 0
 
     # Get the average accuracy
-    return np.mean(accuracies)
+    return 1 - np.mean(accuracies)

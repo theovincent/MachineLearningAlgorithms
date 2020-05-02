@@ -13,7 +13,7 @@ def sag_regressor_test(samples, labels, test_samples, test_labels, loss, loss_de
     sag_classifier = SAGRegressor(loss, loss_derivative, loss_derivative_bias, add_bias, lambada=lambada, eta=eta)
 
     # Train the SAG
-    sag_classifier.fit(samples, labels, show_loss, False, nb_epochs=2)
+    sag_classifier.fit(samples, labels, show_loss, False, nb_epochs=10)
 
     if show_loss:
         # Get the losses
@@ -31,8 +31,8 @@ def hyperparameter_opt(samples, labels, validation, valid_labels, loss, loss_der
                        add_bias):
     # Parameters
     nb_try = 5
-    lambadas = np.linspace(0.0009, 0.002, nb_try)
-    etas = np.linspace(0.009, 0.02, nb_try)
+    lambadas = np.linspace(0.1, 0.9, nb_try)
+    etas = np.linspace(0.03, 0.1, nb_try)
 
     max_accuracy = 0
     eta_opt = 0
@@ -43,7 +43,7 @@ def hyperparameter_opt(samples, labels, validation, valid_labels, loss, loss_der
         sag_regressor = SAGRegressor(loss, loss_derivative, loss_derivative_bias, add_bias, lambada=lambadas[idx_try],
                                       eta=etas[idx_try])
         # Train the SAG
-        sag_regressor.fit(samples, labels, register_loss=False, register_visu=False, nb_epochs=1)
+        sag_regressor.fit(samples, labels, register_loss=False, register_visu=False, nb_epochs=2)
 
         accuracy = get_accuracy(sag_regressor, validation, valid_labels)
 
@@ -73,7 +73,7 @@ def train_sag_regressor(samples, labels, validation, valid_labels, loss, loss_de
     sag_regressor = SAGRegressor(loss, loss_derivative, loss_derivative_bias, add_bias, lambada=lambada, eta=eta)
 
     # Train the SAG
-    sag_regressor.fit(samples, labels, show_loss, show_graph, nb_epochs=5)
+    sag_regressor.fit(samples, labels, show_loss, show_graph, nb_epochs=7)
 
     if show_loss:
         # Get the losses
@@ -106,22 +106,14 @@ def train_sag_regressor(samples, labels, validation, valid_labels, loss, loss_de
 
 if __name__ == "__main__":
     # Get the data
-    MEANS = np.array([[0, 0], [2, 2]])
-    NB_POINTS = 200
+    MEANS = np.array([[0, 0], [1, 1]])
+    NB_POINTS = 10
     (X_COORDS, Y_COORDS, Z_COORDS) = generate_gaussian(MEANS, NB_POINTS)
     (DATA, LABEL) = get_data(X_COORDS, Y_COORDS, Z_COORDS)
 
-    # Normalisation
-    # DATA_TRAIN = normalisation_data(DATA_TRAIN)
-    # DATA_VALID = normalisation_data(DATA_VALID)
-
-    # Standardisation
-    # DATA_TRAIN = standardize_data(DATA_TRAIN)
-    # DATA_VALID = standardize_data(DATA_VALID)
-
     # Train the SAG Classifier
     RESULTS = train_sag_regressor(DATA, LABEL, DATA, LABEL, square_loss, square_derivative,
-                                  square_derivative_bias, show_loss=True, show_hyperparameter=True, show_graph=False,
+                                  square_derivative_bias, show_loss=True, show_hyperparameter=True, show_graph=True,
                                   add_bias=True)
     (ACCURACY_VALID, LAMBDA, ETA) = RESULTS
 

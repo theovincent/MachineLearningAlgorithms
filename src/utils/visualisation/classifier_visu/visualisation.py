@@ -28,7 +28,7 @@ class Visualisation:
         self.ax.set_ylim(y_lims[0], y_lims[1])
         self.ax.grid(True)
 
-        # Set the POINTS
+        # Set the SAMPLE
         horizontal_coords_plus = []
         vertical_coords_plus = []
         horizontal_coords_minus = []

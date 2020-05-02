@@ -107,14 +107,6 @@ if __name__ == "__main__":
     PATH_CSV = Path("../data/normal_data.txt")
     (DATA_TRAIN, LABEL_TRAIN, DATA_VALID, LABEL_VALID) = read_txt(PATH_CSV)
 
-    # Normalisation
-    # DATA_TRAIN = normalisation_data(DATA_TRAIN)
-    # DATA_VALID = normalisation_data(DATA_VALID)
-
-    # Standardisation
-    # DATA_TRAIN = standardize_data(DATA_TRAIN)
-    # DATA_VALID = standardize_data(DATA_VALID)
-
     # Train the SAG Classifier
     RESULTS = train_sag_classifier(DATA_TRAIN, LABEL_TRAIN, DATA_VALID, LABEL_VALID, hinge_loss, hinge_derivative,
                                    show_loss=True, show_hyperparameter=True, show_graph=True, add_bias=True)
