@@ -24,7 +24,7 @@ def store_matrix(matrix, destination_path_name):
 
 
 if __name__ == "__main__":
-    # --- For the classification ---
+    # --- For the networks ---
     # Get the data
     MEANS = np.array([[0, 0], [2, 2]])
     (DATA, LABELS) = generate_normal(MEANS, nb_points=40)

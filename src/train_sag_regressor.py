@@ -1,18 +1,18 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from src.classification.sag_regressor import SAGRegressor
-from src.losses.square_loss import square_loss, square_derivative, square_derivative_bias
-from src.utils.visualisation.regressor_visu.visualisation import visualisation
+from src.networks.sag_regressor import SAGRegressor
+from src.sag.loss.squared_loss import squared_loss, squared_derivative, squared_derivative_bias
+from src.sag.visualisation.regression_visu import regression_visu
 from src.utils.create_data.generate_data.generate_gaussian import get_data, generate_gaussian
-from src.accuracy.accuracy_regression import get_accuracy
+from src.sag.accuracy.regression_acc import regression_acc
 
 
 def sag_regressor_test(samples, labels, test_samples, test_labels, loss, loss_derivative, loss_derivative_bias,
                        lambada, eta, add_bias=True, show_loss=True):
-    # Initialise the SAG
+    # Initialise the sag
     sag_classifier = SAGRegressor(loss, loss_derivative, loss_derivative_bias, add_bias, lambada=lambada, eta=eta)
 
-    # Train the SAG
+    # Train the sag
     sag_classifier.fit(samples, labels, show_loss, False, nb_epochs=10)
 
     if show_loss:
@@ -24,7 +24,7 @@ def sag_regressor_test(samples, labels, test_samples, test_labels, loss, loss_de
         plt.ylabel("Loss")
         plt.show()
 
-    return get_accuracy(sag_classifier, test_samples, test_labels)
+    return regression_acc(sag_classifier, test_samples, test_labels)
 
 
 def hyperparameter_opt(samples, labels, validation, valid_labels, loss, loss_derivative, loss_derivative_bias,
@@ -39,13 +39,13 @@ def hyperparameter_opt(samples, labels, validation, valid_labels, loss, loss_der
     lambada_opt = 0
     losses = np.ones(nb_try)
     for idx_try in range(nb_try):
-        # Initialise the SAG
+        # Initialise the sag
         sag_regressor = SAGRegressor(loss, loss_derivative, loss_derivative_bias, add_bias, lambada=lambadas[idx_try],
                                       eta=etas[idx_try])
-        # Train the SAG
+        # Train the sag
         sag_regressor.fit(samples, labels, register_loss=False, register_visu=False, nb_epochs=2)
 
-        accuracy = get_accuracy(sag_regressor, validation, valid_labels)
+        accuracy = regression_acc(sag_regressor, validation, valid_labels)
 
         # Get the loss
         if add_bias:
@@ -69,10 +69,10 @@ def train_sag_regressor(samples, labels, validation, valid_labels, loss, loss_de
                                          loss_derivative_bias, add_bias)
     (lambada, eta, etas, lambadas, losses_hyper) = hyperparameters
 
-    # Initialise the SAG
+    # Initialise the sag
     sag_regressor = SAGRegressor(loss, loss_derivative, loss_derivative_bias, add_bias, lambada=lambada, eta=eta)
 
-    # Train the SAG
+    # Train the sag
     sag_regressor.fit(samples, labels, show_loss, show_graph, nb_epochs=7)
 
     if show_loss:
@@ -99,9 +99,9 @@ def train_sag_regressor(samples, labels, validation, valid_labels, loss, loss_de
         else:
             biases = np.zeros(len(ortho_vects))
         # Plot the animation
-        visualisation(ortho_vects, biases, samples, labels)
+        regression_visu(ortho_vects, biases, samples, labels)
 
-    return get_accuracy(sag_regressor, validation, valid_labels), lambada, eta
+    return regression_acc(sag_regressor, validation, valid_labels), lambada, eta
 
 
 if __name__ == "__main__":
@@ -111,15 +111,15 @@ if __name__ == "__main__":
     (X_COORDS, Y_COORDS, Z_COORDS) = generate_gaussian(MEANS, NB_POINTS)
     (DATA, LABEL) = get_data(X_COORDS, Y_COORDS, Z_COORDS)
 
-    # Train the SAG Classifier
-    RESULTS = train_sag_regressor(DATA, LABEL, DATA, LABEL, square_loss, square_derivative,
-                                  square_derivative_bias, show_loss=True, show_hyperparameter=True, show_graph=True,
+    # Train the sag Classifier
+    RESULTS = train_sag_regressor(DATA, LABEL, DATA, LABEL, squared_loss, squared_derivative,
+                                  squared_derivative_bias, show_loss=True, show_hyperparameter=True, show_graph=True,
                                   add_bias=True)
     (ACCURACY_VALID, LAMBDA, ETA) = RESULTS
 
-    # Test the SAG Classifier
-    ACCURACY_TEST = sag_regressor_test(DATA, LABEL, DATA, LABEL, square_loss, square_derivative,
-                                       square_derivative_bias, LAMBDA, ETA, show_loss=True, add_bias=True)
+    # Test the sag Classifier
+    ACCURACY_TEST = sag_regressor_test(DATA, LABEL, DATA, LABEL, squared_loss, squared_derivative,
+                                       squared_derivative_bias, LAMBDA, ETA, show_loss=True, add_bias=True)
 
     print("Best validation accuracy", ACCURACY_VALID)
     print("Optimal lambda", LAMBDA)

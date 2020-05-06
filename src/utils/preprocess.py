@@ -7,7 +7,7 @@ from src.utils.preprocessing.pca import pca
 from src.utils.preprocessing.split_label import split_label
 
 
-def get_data(csv_path):
+def get_houses_data(csv_path):
     (houses_train, prices_train, houses_validation, prices_validation, houses_test, prices_test) = read_csv(csv_path)
 
     # Normalisation
@@ -68,4 +68,4 @@ if __name__ == "__main__":
     CSV_PATH = Path("../../data/data.csv")
 
     # --- Get the data ---
-    (ALL_TRAIN, ALL_VALID, ALL_TEST, SPLIT_TRAIN, SPLIT_VALID, SPILT_TEST, LIST_PREPROCESS) = get_data(CSV_PATH)
+    (ALL_TRAIN, ALL_VALID, ALL_TEST, SPLIT_TRAIN, SPLIT_VALID, SPILT_TEST, LIST_PREPROCESS) = get_houses_data(CSV_PATH)
