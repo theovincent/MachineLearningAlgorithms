@@ -4,7 +4,6 @@ from src.utils.preprocessing.read_file.read_csv import read_csv
 from src.utils.preprocessing.standardise import standardize_data
 from src.utils.preprocessing.normalisation import normalisation_data
 from src.utils.preprocessing.pca import pca
-from src.utils.preprocessing.split_label import split_label
 
 
 def get_houses_data(csv_path):
@@ -42,7 +41,6 @@ def get_houses_data(csv_path):
         nb_featurew = pcasw_train[-1].shape[1]
         pcasw_valid.append(pca(houses_validation, 1, whitening=True)[:, :nb_featurew])
         pcasw_test.append(pca(houses_test, 1, whitening=True)[:, :nb_featurew])
-
 
     # Gather the data
     all_trains = [norm_train, stan_train]

@@ -2,7 +2,7 @@ from pathlib import Path
 import numpy as np
 
 # For both models
-from src.sag.train_model import sag_train
+from src.sag.train_sag import sag_train
 
 # For Classification
 from src.utils.preprocessing.read_file.read_txt import read_txt
@@ -17,7 +17,7 @@ from src.sag.accuracy.regression_acc import regression_acc
 from src.sag.visualisation.regression_visu import regression_visu
 
 
-YOU_WANT_CLASSIFICATION = True
+YOU_WANT_CLASSIFICATION = False
 YOU_WANT_REGRESSION = True
 
 ADD_BIAS = True
@@ -37,13 +37,13 @@ NB_POINTS = 10
 
 
 # -- Set the options --
-OPTIONS = [ADD_BIAS, VISUALISATION]
+OPTIONS = [ADD_BIAS, VISUALISATION, True]  # SHOW_PLOTS = True
 
 
 # -- The SAG Classifier --
 if YOU_WANT_CLASSIFICATION:
     FUNCTIONS_CLASS = [hinge_loss, classification_acc, classification_visu]
-    PARAM_CLASS = np.array([[0.0006, 0.009], [0.1, 1]])
+    PARAM_CLASS = np.array([[0.002, 0.005], [0.1, 0.3]])
     # Training
     RESULTS_CLASS = sag_train(DATA_TRAIN, LABEL_TRAIN, DATA_VALID, LABEL_VALID, FUNCTIONS_CLASS, OPTIONS, PARAM_CLASS)
     print("Validation accuracy for classification", RESULTS_CLASS[0])
@@ -54,7 +54,7 @@ if YOU_WANT_CLASSIFICATION:
 # -- The SAG Regressor --
 if YOU_WANT_REGRESSION:
     FUNCTIONS_REG = [squared_loss, regression_acc, regression_visu]
-    PARAM_REG = np.array([[0.0009, 0.04], [0.06, 0.2]])
+    PARAM_REG = np.array([[0.0009, 0.04], [0.08, 0.2]])
     RESULTS_REG = sag_train(DATA, LABEL, DATA, LABEL, FUNCTIONS_REG, OPTIONS, PARAM_REG)
     print("Validation accuracy for regression", RESULTS_REG[0])
     print("The optimal lambda", RESULTS_REG[1])

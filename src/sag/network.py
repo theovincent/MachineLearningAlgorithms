@@ -39,8 +39,8 @@ class SAG:
         nb_view = 1
 
         for epoch in range(nb_epochs):
-            for idx_sample in range(nb_samples):
-                rd.shuffle(indexes)
+            rd.shuffle(indexes)
+            for idx_sample in indexes:
                 idx = indexes[idx_sample]
 
                 # Withdraw former loss derivatives

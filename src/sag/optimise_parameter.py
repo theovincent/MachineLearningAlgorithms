@@ -29,7 +29,7 @@ def optimise_parameter(samples, labels, validation, valid_labels, loss, get_accu
         if not add_bias:
             losses[idx_try] = loss.value(validation, valid_labels, sag_model.ortho, bias=0)
 
-        # Update optimal hyperparameters
+        # Update optimal parameters
         if accuracy > max_accuracy:
             max_accuracy = accuracy
             lambada_opt = lambadas[idx_try]

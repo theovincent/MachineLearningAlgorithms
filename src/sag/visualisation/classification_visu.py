@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
+from matplotlib.animation import ImageMagickWriter
 
 
 def compute_line(horizontal_coords, ortho_vect, bias, level):
@@ -71,8 +72,9 @@ class ClassificationVisu:
 def classification_visu(ortho, biases, points, labels):
     (fig, ax) = plt.subplots()
     visu = ClassificationVisu(ax, ortho, biases, points, labels)
-    animation = FuncAnimation(fig, visu, frames=np.arange(0, len(ortho), 1), init_func=visu.init, interval=3)
+    anima = FuncAnimation(fig, visu, frames=np.arange(0, len(ortho), 1), init_func=visu.init, interval=3)
     ax.legend()
+    # anima.save('sag_classification.gif', writer=ImageMagickWriter(fps=60, metadata=dict(artist='Me'), bitrate=1800), dpi=100)
     plt.show()
 
 

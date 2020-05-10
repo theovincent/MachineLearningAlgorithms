@@ -4,23 +4,22 @@ import matplotlib.pyplot as plt
 
 # For the data
 from src.utils.preprocess import get_houses_data
-from src.utils.preprocessing.split_label import split_label
 
 # For sag method
 from src.sag.train_sag import sag_train
 from src.sag.test_sag import sag_test
-import src.sag.loss.hinge_loss as hinge_sag
-from src.sag.accuracy.classification_acc import classification_acc as acc_sag
-from src.sag.visualisation.classification_visu import classification_visu as visu_sag
+import src.sag.loss.squared_loss as square_sag
+from src.sag.accuracy.regression_acc import regression_acc as acc_sag
+from src.sag.visualisation.regression_visu import regression_visu as visu_sag
 
 # For sdca method
 from src.sdca.train_sdca import sdca_train
 from src.sdca.test_sdca import sdca_test
 from src.sdca.kernel.polynomial import polynomial_kernel
 from src.sdca.kernel.gaussian import gaussian_kernel
-from src.sdca.loss.hinge_loss import hinge_loss as hinge_sdca
-from src.sdca.steps.hinge_step import hinge_step as step_sdca
-from src.sdca.accuracy.classification_acc import classification_acc as acc_sdca
+from src.sdca.loss.square_loss import square_loss as square_sdca
+from src.sdca.steps.square_step import square_step as step_sdca
+from src.sdca.accuracy.regression_acc import regression_acc as acc_sdca
 from src.sdca.visualisation.sdca_visu import sdca_visu
 
 
@@ -36,17 +35,12 @@ POLY_KERNEL = False
 CSV_PATH = Path("data/data.csv")
 (ALL_TRAINS, ALL_VALIDS, ALL_TESTS, PRICES_TRAIN, PRICES_VALID, PRICES_TEST, LIST_PREPROCESS) = get_houses_data(CSV_PATH)
 
-# Split the labels
-SPLIT_TRAIN = split_label(PRICES_TRAIN, PRICES_TRAIN)
-SPLIT_VALID = split_label(PRICES_VALID, PRICES_TRAIN)
-SPLIT_TEST = split_label(PRICES_TEST, PRICES_TRAIN)
-
 
 # --- SAG ---
 # Set the functions, the options and the parameters
-FUNCTIONS_SAG = [hinge_sag, acc_sag, visu_sag]
+FUNCTIONS_SAG = [square_sag, acc_sag, visu_sag]
 OPTIONS = [ADD_BIAS, False, False]  # [ADD_BIAS, VISUALISATION, SHOW_PLOTS]
-PARAM_SAG = np.array([[0.0001, 0.0005], [0.1, 0.5]])  # [LAMBDA, ETA]
+PARAM_SAG = np.array([[0.00007, 0.0003], [0.07, 0.3]])  # [LAMBDA, ETA]
 
 if YOU_WANT_SAG:
     # -- Training --
@@ -61,7 +55,7 @@ if YOU_WANT_SAG:
         print(LIST_PREPROCESS[idx_try])
 
         # Training with the parameters
-        RESULTS_SAG = sag_train(ALL_TRAINS[idx_try], SPLIT_TRAIN, ALL_VALIDS[idx_try], SPLIT_VALID, FUNCTIONS_SAG,
+        RESULTS_SAG = sag_train(ALL_TRAINS[idx_try], PRICES_TRAIN, ALL_VALIDS[idx_try], PRICES_VALID, FUNCTIONS_SAG,
                                 OPTIONS, PARAM_SAG)
 
         (ACCURACY_VALID, LAMBDA, ETA) = RESULTS_SAG
@@ -78,7 +72,7 @@ if YOU_WANT_SAG:
     # -- Testing with the best parameters --
     print("Test the sag...")
     PARAMETERS = [ADD_BIAS, LAMBDA_OPT, ETA_OPT]
-    ACCURACY_TEST = sag_test(ALL_TRAINS[IDX_TRY_OPT], SPLIT_TRAIN, ALL_TESTS[IDX_TRY_OPT], SPLIT_TEST, hinge_sag,
+    ACCURACY_TEST = sag_test(ALL_TRAINS[IDX_TRY_OPT], PRICES_TRAIN, ALL_TESTS[IDX_TRY_OPT], PRICES_TEST, square_sag,
                              acc_sag, PARAMETERS)
 
     print("The accuracy for the test set is :", ACCURACY_TEST)
@@ -100,12 +94,12 @@ if POLY_KERNEL:
     KERNEL = polynomial_kernel
 else:
     KERNEL = gaussian_kernel
-FUNCTIONS_SDCA = [hinge_sdca, step_sdca, POLY_KERNEL, KERNEL, acc_sdca]
+FUNCTIONS_SDCA = [square_sdca, step_sdca, POLY_KERNEL, KERNEL, acc_sdca]
 # Set the range of the parameters for the optimisation : box, degree or gamma
 if POLY_KERNEL:
     PARAM_SDCA = np.array([[0.1, 3], [1, 5]])
 else:
-    PARAM_SDCA = np.array([[0.5, 1], [0.1, 1]])  # [BOX, GAMMA]
+    PARAM_SDCA = np.array([[5, 10], [0.005, 0.009]])  # [BOX, GAMMA]
 
 VISU_SDCA = [False, False, sdca_visu, None, None]  # [SHOW_PLOTS, SHOW_VISU, VISUALISATION, POINTS, VALUES]
 
@@ -122,7 +116,7 @@ if YOU_WANT_SDCA:
         print(LIST_PREPROCESS[idx_try])
 
         # Training with the parameters
-        RESULTS_SDCA = sdca_train(ALL_TRAINS[idx_try], SPLIT_TRAIN, ALL_VALIDS[idx_try], SPLIT_VALID, FUNCTIONS_SDCA,
+        RESULTS_SDCA = sdca_train(ALL_TRAINS[idx_try], PRICES_TRAIN, ALL_VALIDS[idx_try], PRICES_VALID, FUNCTIONS_SDCA,
                                   VISU_SDCA, PARAM_SDCA)
 
         (ACCURACY_VALID, BOX, KERNEL_PARAM) = RESULTS_SDCA
@@ -137,9 +131,9 @@ if YOU_WANT_SDCA:
             IDX_TRY_OPT = idx_try
 
     # -- Testing with the best parameters --
-    print("Test the sag...")
+    print("Test the sdca...")
     PARAMETERS = [BOX_OPT, PARAM_OPT]
-    ACCURACY_TEST = sdca_test(ALL_TRAINS[IDX_TRY_OPT], SPLIT_TRAIN, ALL_TESTS[IDX_TRY_OPT], SPLIT_TEST,
+    ACCURACY_TEST = sdca_test(ALL_TRAINS[IDX_TRY_OPT], PRICES_TRAIN, ALL_TESTS[IDX_TRY_OPT], PRICES_TEST,
                               FUNCTIONS_SDCA, PARAMETERS)
 
     print("The accuracy for the test set is :", ACCURACY_TEST)

@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 import mpl_toolkits.mplot3d.axes3d as p3
+from matplotlib.animation import ImageMagickWriter
 
 
 def compute_prediction(samples, ortho, bias, grid_dims):
@@ -74,7 +75,9 @@ def regression_visu(ortho, biases, samples, labels):
     ax = p3.Axes3D(fig)
     ax.set_title("Function in green. Prediction in black.")
     visu = RegressionVisu(ax, ortho, biases, samples, labels)
-    animation = FuncAnimation(fig, visu, frames=np.arange(0, len(ortho), 1), init_func=visu.init, interval=2)
+    anima = FuncAnimation(fig, visu, frames=np.arange(0, len(ortho), 1), init_func=visu.init, interval=2)
+    ax.legend()
+    # anima.save('sag_regression.gif', writer=ImageMagickWriter(fps=60, metadata=dict(artist='Me'), bitrate=1800), dpi=100)
     plt.show()
 
 
